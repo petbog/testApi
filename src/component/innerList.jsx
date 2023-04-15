@@ -5,7 +5,10 @@ import classes from './innerList.module.css'
 
 const InnerList = () => {
     const [value, setValue] = useState([])
- console.log(value)
+    const [id, setId] = useState()
+
+
+
 
     const video = value.items
     useEffect(() => {
@@ -18,16 +21,39 @@ const InnerList = () => {
         getVideo()
     }, [])
 
+
+    useEffect(() => {
+        video && video.filter(item => setId(item.id.videoId))
+
+    }, [video])
+
+
+
+    useEffect(() => {
+        const getVideo = async () => {
+            const api_key = `AIzaSyBGiRuZ-YJLoo3fiRHxoWpwZKiZpOXDufw`
+            const params = {
+                part: "snippet,statistics",
+                id: id.join(','),
+                key: api_key,
+            }
+            const { data } = await axios.get("https://www.googleapis.com/youtube/v3/videos", params)
+            return data
+
+        }
+        getVideo()
+    }, [id])
+
     return (
         <div className={classes.container}>
-            {/* <div className={classes.videoContainer}>
+            <div className={classes.videoContainer}>
                 {
-                    video && video.map((item, i) => <div key={i} >       
+                    video && video.map((item, i) => <div key={i} >
                         <iframe src={`https://www.youtube.com/embed/${item.id.videoId}`} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen='allowfullscreen'></iframe>
                     </div>)
                 }
 
-            </div> */}
+            </div>
 
         </div>
     )
